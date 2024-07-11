@@ -1,0 +1,484 @@
+                INPUT   			/ Se ingresa el tamaño de los arrays
+                STORE size			/ Se guarda el tamaño de los arrays ingresados  en la variable size
+                LOAD size			/ Se la variable size en el acumulador
+                STORE i				/ Se guarda el valor de size en la variable iteradora i
+                STORE j				/ Se guarda el valor de size en la variable iteradora j
+                LOAD i				/ Se carga la variable i en el acumulador
+                SUBT one			/ Se resta uno para que la variable iteradora sea correcta, ya que la posiciones arrancan de cero
+                STORE i				/ Se guarda el nuevo valor de i
+                LOAD j				/ Se carga la variable j en el acumulador
+                SUBT one			/ Se resta uno para que la variable iteradora sea correcta, ya que la posiciones arrancan de cero
+                STORE j				/ Se guarda el nuevo valor de j
+                LOAD array_a1       / Se carga el valor de la posicion del array a1
+                STORE index_actual_a1   / Se guarda el valor de la posicion del array a1 en dicha variable
+                LOAD array_a2           / Se procede de la misma manera para a2 y a3
+                STORE index_actual_a2
+                LOAD array_a3 
+                STORE index_actual_a3
+
+            
+input_a1, 	    INPUT				/ Funcion input_a1, comienza pidiendo como input los valores a agregar al array
+                STORE input_ingresado		/ Se guarda el valor ingresado en la variable input_ingresado
+                LOAD input_ingresado		/ Se carga en el acumulador el valor de la variable input_ingresado
+                STOREI index_actual_a1   	/ Se guarda indirectamente el valor de la variable input_ingresado en la posicion en memoria del valor de index_actual
+                LOAD index_actual_a1		/ Se carga en el acumulador la variable index_actual
+                ADD one				/ Se le suma uno a la variable cargada en el acumulador
+                STORE index_actual_a1    	/ Se guarda el nuevo valor de index_actual, para tener la posicion siguiente del array
+                LOAD i				/ Se carga en el acumulador la variable i
+                SUBT one			/ Se le resta uno
+                STORE i 			/ Se guarda el nuevo valor de la variable i
+                SKIPCOND 000			/ Se compara el valor actual de i si i < 0, se ejecuta JUMP Restore_i, sino se ejecuta la misma funcion Input_a1
+                JUMP input_a1 			/ Se repite en loop la funcion Input_a1
+                LOAD size               
+                SUBT one
+                STORE i                 / Se resetea el valor de i con el valor size - 1
+                LOAD array_a1   
+                STORE index_actual_a1   / Se resetea el valor con la posicion inicial de a1
+
+
+input_a2, 	    INPUT				/ Se repite el proceso que con la funcion Input_a1, cambiando la variable iteradora
+                STORE input_ingresado
+                LOAD input_ingresado
+                STOREI index_actual_a2   
+                LOAD index_actual_a2
+                ADD one
+                STORE index_actual_a2    
+                LOAD j
+                SUBT one
+                STORE j 
+                SKIPCOND 000
+                JUMP input_a2            
+                LOAD size
+                SUBT one
+                STORE j
+                LOAD array_a2 
+                STORE index_actual_a2
+
+input_opcion,   INPUT                               // Se solicita un input y se compara si no es cero salta a la opcion1 sino salta a la funcion output_a3 que imprime a3
+                STORE input_ingresado               // Se guarda el input ingresado
+                SKIPCOND 400
+                JUMP opcion1
+                JUMP output_a3
+
+opcion1,	    LOAD input_ingresado           // Se carga el input ingresado ingresado anteriormente
+                SUBT one                       // Se resta uno
+                STORE input_ingresado          // Se guarda el nuevo valor
+                SKIPCOND 400                   // Se compara si ahora es cero 
+                JUMP opcion2                   // Si no es cero salta a la opcion2
+                JUMP ordenar_a1_a3             // Si es igual a cero salta a al funcion ordenar_a1_a3
+
+opcion2,	    LOAD input_ingresado           // Se repite al igual que opcion1
+                SUBT one
+                STORE input_ingresado
+                SKIPCOND 400
+                JUMP opcion3
+                JUMP sumar_a1_a2
+
+opcion3,	    LOAD input_ingresado          // Se repite igual que opcion1 y opcion2
+                SUBT one
+                STORE input_ingresado
+                SKIPCOND 400
+                JUMP opcion4
+                JUMP prep_mult
+
+opcion4,	    LOAD input_ingresado           // Se repite al igual que opcion1, opcion2 y opcion3
+                SUBT one
+                STORE input_ingresado
+                SKIPCOND 400
+                JUMP input_opcion	
+                JUMP prep_div
+
+ordenar_a1_a3,  LOAD one                    // Funcion no implementada de ordenar a1 en a3
+                OUTPUT
+                JUMP input_opcion
+                
+
+sumar_a1_a2,	LOADI index_actual_a1       // Funcion donde se suma a1 y a2 y se guarda la suma de los valores en a3
+		        STORE valor_a1
+		        LOADI index_actual_a2
+                STORE valor_a2
+                LOAD valor_a1
+                ADD valor_a2
+                STOREI index_actual_a3
+                LOAD index_actual_a1
+                ADD one
+                STORE index_actual_a1
+                LOAD index_actual_a2
+                ADD one
+                STORE index_actual_a2
+                LOAD index_actual_a3
+                ADD one
+                STORE index_actual_a3
+                LOAD i
+                SUBT one
+                STORE i
+                SKIPCOND 000
+                JUMP sumar_a1_a2
+                LOAD size                   / Se resetean las variables finalizada la iteracion 
+                SUBT one
+                STORE i
+                LOAD array_a1 
+                STORE index_actual_a1
+                LOAD array_a2 
+                STORE index_actual_a2
+                LOAD array_a3 
+                STORE index_actual_a3
+                JUMP output_a3             / SDalta a lafuncion de imprimir a3
+
+prep_mult,	LOADI index_actual_a1       / Se prepara la multiplicacion, cargando indirectamente el valor del index actual de a1
+                STORE res_parcial_mult      / Se guarda en una variable
+		STORE sumar_num             / Se guarda el valor para sumar el resultado de la mult
+                SKIPCOND 000
+		JUMP prep_mult2
+		JUMP prep_mult_negativo
+
+prep_mult2,	LOADI index_actual_a2
+		STORE i_mult
+		SKIPCOND 000
+		JUMP prep_mult_positivos
+		JUMP prep_multi_negativo
+
+
+prep_mult_positivos,     	LOAD i_mult
+			 	SUBT one
+			 	STORE i_mult
+				JUMP mult_num             
+			
+
+prep_mult_negativo,			LOADI index_actual_a2
+					STORE i_mult
+					SKIPCOND 000
+					JUMP prep_mult_neg_num
+					JUMP mult_negativos
+
+prep_multi_negativo,			LOADI index_actual_a1
+					STORE res_parcial_mult
+					SUBT res_parcial_mult
+					SUBT res_parcial_mult
+					STORE res_parcial_mult
+					STORE sumar_num
+					LOAD sumar_num
+					OUTPUT
+					LOAD i_mult
+					SUBT i_mult
+					SUBT i_mult
+					SUBT one
+					STORE i_mult
+					LOAD i_mult
+					OUTPUT
+					JUMP mult_neg_num
+
+
+prep_mult_neg_num,		LOAD i_mult
+				SUBT one
+				STORE i_mult
+				JUMP mult_neg_num
+
+mult_negativos, 	LOADI index_actual_a1
+			STORE res_parcial_mult
+			SUBT res_parcial_mult
+			SUBT res_parcial_mult
+			STORE res_parcial_mult
+			STORE sumar_num
+			OUTPUT
+			LOAD i_mult
+			SUBT i_mult
+			SUBT i_mult
+			SUBT one
+			STORE i_mult
+			OUTPUT
+			JUMP mult_num
+				
+
+mult_num,       LOAD res_parcial_mult       / Se carga el resultado parcial de la multiplicaicon
+                ADD sumar_num               / Se le suma al resultado el valor guardado de a1 en dicha posicion
+                STORE res_parcial_mult      / Se guarda el resultado de la suma 
+                LOAD i_mult                 / Se carga la variable iteradora de la mult
+                SUBT one                    / Se le resta uno
+                STORE i_mult                / Se guarda el nuevo valor
+                SKIPCOND 400                / Se compara si es igual a cero
+                JUMP mult_num               / Si no es igual a cero se vuelve a iterar sobre mult_num hasta que se realizen la cantidad de suma necesarias
+		JUMP fin_mult               / Si es igual a cero salta a la siguiente funcion
+
+mult_neg_num,   LOAD res_parcial_mult       / Se carga el resultado parcial de la multiplicaicon
+                ADD sumar_num               / Se le suma al resultado el valor guardado de a1 en dicha posicion
+                STORE res_parcial_mult      / Se guarda el resultado de la suma 
+                LOAD i_mult                 / Se carga la variable iteradora de la mult
+                SUBT one                    / Se le resta uno
+                STORE i_mult                / Se guarda el nuevo valor
+                SKIPCOND 400                / Se compara si es igual a cero
+                JUMP mult_neg_num            / Si no es igual a cero se vuelve a iterar sobre mult_num hasta que se realizen la cantidad de suma necesarias
+		JUMP fin_mult               / Si es igual a cero salta a la siguiente funcion
+
+fin_mult,       LOAD res_parcial_mult       /Se carga el resultado de la multiplicacion
+                STOREI index_actual_a3      / Se guarda indirectamente en la posicion actual de a3
+                LOAD index_actual_a3        / Se carga el index actual de a3
+                ADD one                     / Se le suma 1 para obtener el indice siguiente de a3
+                STORE index_actual_a3       / Se guarda el nuevo indice de a3
+		LOAD index_actual_a1        / Para a1 y a2 a los indices actuales se le suma uno para obtener los indices siguientes con los cuales operar
+                ADD one
+                STORE index_actual_a1
+                LOAD index_actual_a2
+                ADD one
+                STORE index_actual_a2
+                JUMP indice_mult            / Salta a indice mult para controlar la iteracion sobre los arrays
+		
+
+indice_mult,    LOAD i                      / Se carga i
+                SUBT one                    / Se le resta 1
+                STORE i
+                SKIPCOND 000                / Se compara si es menor a cero
+                JUMP prep_mult              / Si no es menor que a cero salta a prep_mult para multiplicar los siguientes valores
+                LOAD size                   / Si es menor a cero, se resetean las variables
+                SUBT one
+                STORE i
+                LOAD array_a1 
+                STORE index_actual_a1
+                LOAD array_a2 
+                STORE index_actual_a2
+                LOAD array_a3 
+                STORE index_actual_a3
+		        LOAD size
+                SUBT one
+                STORE j
+                LOAD cero
+                STORE res_temp
+                STORE prodcart              / Se restean los valores para que no queden sucios
+                JUMP sum_prodcart           / Salta a la funcion sum_prodcart
+
+
+sum_prodcart,   LOAD prodcart               / Se carga la variable prodcart para guardar la suma de los valores de a3
+                ADDI index_actual_a3        / Se suma indirectamente el index actual de a3
+                STORE prodcart              / Y se guarda la suma en la variable prodcart
+                LOAD index_actual_a3
+                ADD one
+                STORE index_actual_a3       / Se suma uno y se guarda el nuevo indice de a3 
+                LOAD j                      / Se carga la variable iteradora j
+                SUBT one                    / Se le resta uno se vuelve a guardar y se compara
+                STORE j 
+                SKIPCOND 000                / Se compara si es menor que cero
+                JUMP sum_prodcart           / Si no es menor que cero se vuelve a iterar sobre sum_prodcart
+                LOAD size                   / Se es cero, se resetean las variales
+                SUBT one
+                STORE j
+                LOAD array_a3 
+                STORE index_actual_a3
+                JUMP output_prodcart        / Salta a la funcion output_prodcart
+
+
+output_prodcart,    LOAD prodcart          / Se carga la variable prodcart y se imprime
+                    OUTPUT
+                    JUMP input_opcion       / Luego vuelve a la funcion input_opcion
+
+
+prep_div,           	LOADI index_actual_a1  / Se carga indirectamente el valor del indice actual de a1
+                   	STORE dividendo         / Se lo guarda en la variable dividendo
+			SKIPCOND 000		/ Compara si es menor a cero
+                        JUMP prep2_div		/ Si no es menor a cero salta a la func prep2_div
+			JUMP prep_divid_neg	/ Si es menor a cero el dividendo salta a la func prep_divid_neg           
+
+prep2_div,		LOADI index_actual_a2    / Se carga indirectamente el valor del inidice actual a2
+                    	STORE divisor               / Se guarda dicho valor en la variable divisor
+                    	SKIPCOND 000		/ Se compara el divisor es es menor a cero		
+			JUMP div_num		/ Si no es menor se da una division entre positivos, salta a func div_num			
+			JUMP prep_divis_neg
+
+prep_divid_neg,		LOADI index_actual_a2    / Se carga indirectamente el valor del inidice actual a2
+                    	STORE divisor               / Se guarda dicho valor en la variable divisor
+                    	SKIPCOND 000		/ Se compara si el divisor tambien es es menor a cero
+			JUMP div_divid_negativo			/ Si no es menor acero a cero salta a 	
+			JUMP prep_div_negativos    / Si es menor a cero salta a
+
+prep_divis_neg,		LOADI index_actual_a1   / Cargo indirectamente el valor de a1
+			STORE dividendo		/ Lo guardo en la variable dividendo, y lo resto dos veces para tener su inverso negativo
+			SUBT dividendo
+			SUBT dividendo
+			STORE dividendo
+			LOADI index_actual_a2	/ Cargo indirectamente el valor de a2
+			STORE divisor		/ Lo guardo en la variable divisor, y lo resto dos veces para obtener su inverso positivo
+			SUBT divisor
+			SUBT divisor
+			STORE divisor
+			JUMP div_divid_negativo  / Salto a la func paa dividir con el dividendo negativo
+
+prep_div_negativos,	LOADI index_actual_a1   / Cargo indirectamente el valor de a1
+			STORE dividendo		/ Lo guardo en la variable dividendo, y lo resto dos veces para tener su inverso negativo
+			SUBT dividendo
+			SUBT dividendo
+			STORE dividendo
+			OUTPUT
+			LOADI index_actual_a2	/ Cargo indirectamente el valor de a2
+			STORE divisor		/ Lo guardo en la variable divisor, y lo resto dos veces para obtener su inverso positivo
+			SUBT divisor
+			SUBT divisor
+			STORE divisor
+			OUTPUT
+			JUMP div_num 		/ Salto a la func paa dividir con el dividendo negativo
+
+div_divid_negativo,	LOAD dividendo              / Se carga la variable dividendo
+                    	ADD divisor                / Se le suma el valor del divisor al dividendo, ya que el dividendo es negativo
+                    	STORE dividendo             / Se guarda el nuevo valor del dividendo
+                    	LOAD res_parcial_div        / Se carga el valor res_parcial_div para guardar la cantidad de veces que se reste (itera) lo cual es el valor real de la division
+                    	SUBT one                     / Se le resta uno, para que nos de un resultado negativo
+                    	STORE res_parcial_div       / Se guardael nuevo valor del resultado parcial de la division
+                    	LOAD dividendo              / Se carga el dividendo
+                    	SKIPCOND 000 		    / Se compara si es menor a cero	
+			JUMP fin_div                / Si no es menor a cero se finaliza la iteracion de la division
+			JUMP div_divid_negativo     / Si no es menor a cero se continua iterando sobre la div
+    
+
+div_num,            LOAD dividendo              / Se carga la variable dividendo
+                    SUBT divisor                / Se le resta el valor del divisor
+                    STORE dividendo             / Se guarda el nuevo valor del dividendo
+                    LOAD res_parcial_div        / Se carga el valor res_parcial_div para guardar la cantidad de veces que se reste (itera) lo cual es el valor real de la division
+                    ADD one                     / Se le suma uno
+                    STORE res_parcial_div       / Se guardael nuevo valor del resultado parcial de la division
+                    LOAD dividendo              / Se carga el dividendo
+                    SKIPCOND 800                / Se compara si es mayor a cero
+                    JUMP fin_div                / Si no es mayor a cero se finaliza la iteracion de la division
+                    JUMP div_num                / Si es mayor a cero se continua iterando sobre la div
+
+
+fin_div,            LOAD res_parcial_div         // Se carga el resultado de la divison
+                    STOREI index_actual_a3        / Se guarda indirectamente en el indice actual del a3
+                    LOAD index_actual_a3          / Se carga el indice actual de a3
+                    ADD one                       / Se le suma uno
+                    STORE index_actual_a3         / Se guarda el nuevo indice de a3
+                    LOAD index_actual_a1          / Se hace lo mismo para a1, a2 y se resetea el resultado parcial de la division para que comience en cero si hay otra iteracion 
+                    ADD one
+                    STORE index_actual_a1
+                    LOAD index_actual_a2
+                    ADD one
+                    STORE index_actual_a2
+                    LOAD cero
+                    STORE res_parcial_div
+                    JUMP indice_div
+
+indice_div,         LOAD i                      / Carga la variable i
+                    SUBT one                    / Le resta uno
+                    STORE i                     / Guarda el nuevo valor
+                    SKIPCOND 000                / Compara si es menor a cero
+                    JUMP prep_div               / Si no es menor que cero vuelve a la siguiente division de los siguientes indices de a1, a2 y guardando el resultado en a3
+                    LOAD size                   / Si es menor a cero se resetean todas las variables utilizadas
+                    SUBT one
+                    STORE i
+                    LOAD array_a1 
+                    STORE index_actual_a1
+                    LOAD array_a2 
+                    STORE index_actual_a2
+                    LOAD array_a3 
+                    STORE index_actual_a3
+                    LOAD size
+                    SUBT one
+                    STORE j
+                    LOAD cero
+                    STORE res_temp
+                    STORE divcart
+                    JUMP sum_divcart
+
+sum_divcart,    LOAD divcart                    / Se carga la variable divart
+                ADDI index_actual_a3            / Se le suma indirectamente el valor del indice actual de a3
+                STORE divcart                   / Se guarda el nuevo valor de divcart
+                LOAD index_actual_a3            / Se carga el indice actual de a3 y se le suma uno para guardar el siguiente indice en a3
+                ADD one
+                STORE index_actual_a3
+                LOAD j                           / Se carga la variable iteradora j y se le resta uno y se vuelve a guardar el nuevo valor de j
+                SUBT one
+                STORE j 
+                SKIPCOND 000                    / Se compara si es menor a cero
+                JUMP sum_divcart                / Si no es menor se vuelve a iterar sobre sum_divcart
+                LOAD size                       / Si es menor a cero se resetean las variables
+                SUBT one
+                STORE j
+                LOAD array_a3 
+                STORE index_actual_a3
+                JUMP output_divcart
+
+
+output_divcart,     LOAD divcart                // Se carga la variable de divcart y se imprime
+                    OUTPUT  
+                    JUMP input_opcion           / Se vuelve a la funcion input_opcion
+
+
+output_a3, 	    LOADI index_actual_a3           / Se carga indirectamente el valor del index actual de a3
+                OUTPUT                          / Se imprime
+                LOAD index_actual_a3            / Se carga el index actual de a3, se le suma uno y se guarda nuevamente para obtener el index siguiente
+                ADD one
+                STORE index_actual_a3    
+                LOAD j                          / Se carga la variable iteradora j
+                SUBT one                        / Se le resta uno
+                STORE j                         / Se vuelve a guardar el nuevo valor de j
+                SKIPCOND 000                    / Se compara si es menor a cero
+                JUMP output_a3                  / Si no es menor a cero se vuelve a iterar
+                LOAD size                       / Si es menor a cero se resetan las variables
+                SUBT one
+                STORE j
+                LOAD array_a3 
+                STORE index_actual_a3
+                JUMP input_opcion               / Se vuelve a input_opcion
+
+
+
+
+output_a1, 	    LOADI index_actual_a1		/ Carga en el acumulador indirectamente el valor de index_actual, es decir el valor en dicha posicion
+                OUTPUT				/ imprime el valor
+                LOAD index_actual_a1		/ Carga en el acumulador la variable index_actual
+                ADD one				/ Le suma uno
+                STORE index_actual_a1    		/ Guarda el nuevo valor en la variable index_actual, el cual corresponde a la siguiente posicion en el array
+                LOAD i				/ Carga la variable iteradora i en el acumulador
+                SUBT one			/ Le resta uno al valor del acumulador cual es la variable i
+                STORE i 			/ Guarda el nuevo valor en la variable i
+                SKIPCOND 000			/ Compara el valor del nuevo i, i < 0, sale de la funcion ya que finalizo, sino la ejecuta hasta culminar con todas las posiciones del array
+                JUMP output_a1
+                LOAD size
+                SUBT one
+                STORE i
+                LOAD array_a1 
+                STORE index_actual_a1
+		
+		
+output_a2, 	    LOADI index_actual_a2
+                OUTPUT
+                LOAD index_actual_a2
+                ADD one
+                STORE index_actual_a2    
+                LOAD j
+                SUBT one
+                STORE j 
+                SKIPCOND 000
+                JUMP output_a2
+                LOAD size
+                SUBT one
+                STORE j
+                LOAD array_a2 
+                STORE index_actual_a2
+
+End,		    HALT        // Actualmente esta funcion no se encuentra en uso, ya que se itera siempre con input_opcion
+
+
+size, DEC 0
+i, DEC 0
+j, DEC 0
+res_parcial_mult, DEC 0
+i_mult, DEC 0
+sumar_num, DEC 0
+prodcart, DEC 0
+res_parcial_div, DEC 0
+dividendo, DEC 0
+divisor, DEC 0
+restar_num, DEC 0
+i_div, DEC 0
+divcart, DEC 0
+input_ingresado, DEC 0
+cero, DEC 0
+one, DEC 1
+res_temp, DEC 0
+index_actual_a1, HEX 0
+index_actual_a2, HEX 0
+index_actual_a3, HEX 0
+valor_a1, DEC 0
+valor_a2, DEC 0
+valor_a3, DEC 0
+array_a1, HEX 200
+array_a2, HEX 205
+array_a3, HEX 210
